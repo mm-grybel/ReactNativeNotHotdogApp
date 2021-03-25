@@ -16,6 +16,8 @@ target 'ReactNativeNotHotdogApp' do
 
   pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
 
+  pod 'TfliteReactNative', :path => '../node_modules/tflite-react-native'
+
   target 'ReactNativeNotHotdogAppTests' do
     inherit! :complete
     # Pods for testing
