@@ -1,5 +1,6 @@
 package com.reactnativenothotdogapp;
 
+import com.reactlibrary.TfliteReactNativePackage;
 import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
