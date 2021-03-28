@@ -50,11 +50,13 @@ export default class App extends Component {
                     imageStd: 128,
                     numResults: 2,
                     threshold: 0.05,
-                }, (err, res) => {
+                }, 
+                (err, res) => {
                     if (err) {
                         console.log(err);
                     } else {
-                        console.log(res);
+                        console.log(res[res.length - 1]);
+                        this.setState({ recognitions: res[res.length - 1] });
                     }
                 });
             }
@@ -62,6 +64,7 @@ export default class App extends Component {
     };
 
     render() {
+        const { recognitions, source } = this.state;
         return (
             <LinearGradient 
                 colors={['#1e1e1e', '#222']} 
@@ -72,10 +75,24 @@ export default class App extends Component {
                     <Text style={styles.subtitle}>Seafood Startup</Text>
                 </View>
                 <View style={styles.outputContainer}>
-                    <Image 
-                        source={require('./assets/hotdog.jpeg')} 
-                        style={styles.image}
-                    />
+                    {recognitions ? (
+                        <View>
+                            <Image
+                                source={source}
+                                style={styles.image} 
+                            />
+                            <Text style={styles.text}>
+                                {recognitions['label'] + 
+                                ' - ' + (recognitions['confidence'] * 100).toFixed(0) + 
+                                '%'}
+                            </Text>
+                        </View>
+                    ) : (
+                        <Image 
+                            source={require('./assets/hotdog.jpeg')} 
+                            style={styles.image}
+                        />
+                    )}
                 </View>
                 <View style={styles.buttonContainer}>
                     <View>
@@ -137,5 +154,11 @@ const styles = StyleSheet.create({
     image: {
         height: 250,
         width: 250
+    },
+    text: {
+        fontSize: 25,
+        color: 'white',
+        textAlign: 'center',
+        paddingTop: 10
     }
 });
