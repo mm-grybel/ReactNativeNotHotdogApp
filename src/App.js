@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect } from 'react';
-import { View, Text, Image, Dimensions, StyleSheet } from 'react-native';
+import { View, Text, Image, Dimensions, StyleSheet, ImageBackground } from 'react-native';
 import { Button } from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import ImagePicker from 'react-native-image-picker';
@@ -10,7 +10,6 @@ var modelFile = 'models/model.tflite';
 var labelsFile = 'models/labels.txt';
 
 export default class App extends Component {
-
     constructor(props) {
         super(props);
         
@@ -38,12 +37,25 @@ export default class App extends Component {
             if (response.didCancel) {
                 console.log('User cancelled Image');
             } else if (response.error) {
-                console.log('Error');
+                console.log('Image Picker Error', response.error);
             } else if (response.customButton) {
                 console.log('User pressed Custom Button');
             } else {
                 this.setState({
                     source: { uri: response.uri }
+                });
+                tflite.runModelOnImage({
+                    path: response.path,
+                    imageMean: 128,
+                    imageStd: 128,
+                    numResults: 2,
+                    threshold: 0.05,
+                }, (err, res) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log(res);
+                    }
                 });
             }
         });
