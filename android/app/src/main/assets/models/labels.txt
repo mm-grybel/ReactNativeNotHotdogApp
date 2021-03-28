@@ -1,2 +1,2 @@
-0 Hotdog
-1 NotHotdog
+Hotdog
+NotHotdog
