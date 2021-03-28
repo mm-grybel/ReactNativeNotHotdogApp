@@ -63,8 +63,41 @@ export default class App extends Component {
         });
     };
 
+    takeImage() {
+        const options = {};
+        ImagePicker.launchCamera(options, (response) => {
+            if (response.didCancel) {
+                console.log('User cancelled Image');
+            } else if (response.error) {
+                console.log('Image Picker Error', response.error);
+            } else if (response.customButton) {
+                console.log('User pressed Custom Button');
+            } else {
+                this.setState({
+                    source: { uri: response.uri }
+                });
+                tflite.runModelOnImage({
+                    path: response.path,
+                    imageMean: 128,
+                    imageStd: 128,
+                    numResults: 2,
+                    threshold: 0.05,
+                }, 
+                (err, res) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log(res[res.length - 1]);
+                        this.setState({ recognitions: res[res.length - 1] });
+                    }
+                });
+            }
+        });
+    };    
+
     render() {
         const { recognitions, source } = this.state;
+
         return (
             <LinearGradient 
                 colors={['#1e1e1e', '#222']} 
@@ -110,6 +143,7 @@ export default class App extends Component {
                             titleStyle={{ fontSize: 20 }}
                             containerStyle={{ margin: 5 }}
                             buttonStyle={styles.button}
+                            onPress={this.takeImage.bind(this)}
                         />
                     </View>
                 </View>
